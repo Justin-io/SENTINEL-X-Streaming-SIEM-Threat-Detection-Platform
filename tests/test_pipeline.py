@@ -1,11 +1,11 @@
 from pathlib import Path
 from datetime import datetime,timezone,timedelta
-import json,pytest
+import json,pytest  # noqa: F401
 from fastapi.testclient import TestClient
 from sentinel_x.storage import Store
 from sentinel_x.detection import RuleEngine
 from sentinel_x.pipeline import Pipeline
-from sentinel_x.generator import generate_events,replay
+from sentinel_x.generator import generate_events,replay  # noqa: F401
 from sentinel_x.api import app
 
 RULES=Path(__file__).parents[1]/"rules"
