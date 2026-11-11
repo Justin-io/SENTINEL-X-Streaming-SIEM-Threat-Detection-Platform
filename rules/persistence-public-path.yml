@@ -1,0 +1,10 @@
+id: SX-004
+title: Executable created in public user path
+description: Detects executable creation in a commonly abused writable path; path alone does not prove persistence.
+enabled: true
+severity: high
+attack: []
+match:
+  event_action: file_create
+  file_path:
+    contains: 'Users\Public'

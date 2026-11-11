@@ -1,0 +1,10 @@
+id: SX-002
+title: Root authentication failure
+description: Flags failed root authentication attempts; one failure is not proof of brute force.
+enabled: true
+severity: medium
+attack: []
+match:
+  event_action: auth_failure
+  user_name: root
+  outcome: failure

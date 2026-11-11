@@ -1,0 +1,11 @@
+id: SX-005
+title: Interactive shell spawned by web service
+description: Detects a shell process whose parent is a web service process.
+enabled: true
+severity: high
+attack: [T1059.004]
+match:
+  process_name:
+    contains: bash
+  process_parent_name:
+    contains: nginx

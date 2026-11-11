@@ -1,0 +1,25 @@
+title: Encoded PowerShell from Office Parent
+id: 7dd2a8a1-9e00-4e85-9a3e-000000000001
+status: test
+description: Detect encoded PowerShell launched by an Office process.
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_image:
+    Image|contains: powershell
+  selection_encoded:
+    CommandLine|contains:
+      - -enc
+      - -encodedcommand
+  selection_parent:
+    ParentImage|contains:
+      - winword
+      - excel
+      - powerpnt
+  condition: all of selection_*
+level: high
+tags:
+  - attack.execution
+  - attack.t1059.001
+  - attack.t1204.002

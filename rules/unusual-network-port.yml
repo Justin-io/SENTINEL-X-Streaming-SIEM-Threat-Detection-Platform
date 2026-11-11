@@ -1,0 +1,9 @@
+id: SX-003
+title: Connection to uncommon lab service port
+description: Detects a TCP connection to port 4444 in lab telemetry.
+enabled: true
+severity: medium
+attack: [T1571]
+match:
+  destination_port: 4444
+  network_protocol: tcp

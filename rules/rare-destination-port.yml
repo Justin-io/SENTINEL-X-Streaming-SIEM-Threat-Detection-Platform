@@ -1,0 +1,8 @@
+id: SX-006
+title: Network event to administrative port
+description: Heuristic for SSH or RDP destinations; validate against local baseline.
+enabled: true
+severity: low
+attack: [T1021]
+match:
+  destination_port: [22, 3389]

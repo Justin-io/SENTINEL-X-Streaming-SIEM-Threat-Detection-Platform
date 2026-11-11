@@ -1,0 +1,76 @@
+services:
+  sentinel-x:
+    build: .
+    ports: ["127.0.0.1:8000:8000"]
+    environment:
+      SENTINEL_DATA_DIR: /var/lib/sentinel-x
+      SENTINEL_CLICKHOUSE_ENABLED: "${SENTINEL_CLICKHOUSE_ENABLED:-false}"
+      SENTINEL_CLICKHOUSE_HOST: clickhouse
+      SENTINEL_CLICKHOUSE_PORT: "8123"
+      SENTINEL_KAFKA_ENABLED: "${SENTINEL_KAFKA_ENABLED:-false}"
+      SENTINEL_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+    volumes: ["sentinel-data:/var/lib/sentinel-x"]
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+        required: false
+    restart: unless-stopped
+  sentinel-seed:
+    build: .
+    command: ["sh","-c","python -m sentinel_x.cli generate --count 250 --seed 42 --output data/sample-events.jsonl && python -m sentinel_x.cli replay data/sample-events.jsonl"]
+    environment:
+      SENTINEL_DATA_DIR: /var/lib/sentinel-x
+      SENTINEL_CLICKHOUSE_ENABLED: "${SENTINEL_CLICKHOUSE_ENABLED:-false}"
+      SENTINEL_CLICKHOUSE_HOST: clickhouse
+      SENTINEL_CLICKHOUSE_PORT: "8123"
+    volumes: ["sentinel-data:/var/lib/sentinel-x"]
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+        required: false
+      sentinel-x:
+        condition: service_healthy
+    restart: "no"
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v26.2.6
+    profiles: [streaming]
+    command: ["redpanda","start","--overprovisioned","--smp","1","--memory","1G","--reserve-memory","0M","--node-id","0","--check=false","--kafka-addr","internal://0.0.0.0:9092,external://0.0.0.0:19092","--advertise-kafka-addr","internal://redpanda:9092,external://localhost:19092"]
+    ports: ["127.0.0.1:19092:19092"]
+    healthcheck:
+      test: ["CMD","rpk","cluster","health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+  sentinel-stream-worker:
+    build: .
+    profiles: [streaming]
+    command: ["python","-m","sentinel_x.cli","consume","--bootstrap-servers","redpanda:9092"]
+    environment:
+      SENTINEL_DATA_DIR: /var/lib/sentinel-x
+      SENTINEL_CLICKHOUSE_ENABLED: "${SENTINEL_CLICKHOUSE_ENABLED:-false}"
+      SENTINEL_CLICKHOUSE_HOST: clickhouse
+      SENTINEL_CLICKHOUSE_PORT: "8123"
+    volumes: ["sentinel-data:/var/lib/sentinel-x"]
+    depends_on:
+      redpanda:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+        required: false
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.8.36.3
+    profiles: [analytics]
+    ports: ["127.0.0.1:8123:8123","127.0.0.1:9000:9000"]
+    volumes: ["clickhouse-data:/var/lib/clickhouse"]
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD","clickhouse-client","--query","SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+volumes:
+  sentinel-data:
+  clickhouse-data:

@@ -1,0 +1,9 @@
+{
+  "dataset":{"name":"synthetic_lab_mix","events":1500,"seed":42,"anchor_time":"2026-01-01T00:00:00+00:00","repeated_runs":3,"split_strategy":"not applicable: no learned model; synthetic deterministic events only"},
+  "baseline_ingest_only":{"events_per_second":{"median":1352.2966,"min":1192.5332,"max":1416.1684},"latency_p50_ms":{"median":0.6672,"min":0.6300,"max":0.6775},"latency_p95_ms":{"median":0.9093,"min":0.8829,"max":1.3043},"storage_bytes_per_million_events":{"median":4666474666.7,"min":4658186666.7,"max":4696480000.0}},
+  "full_detection_pipeline":{"events_per_second":{"median":617.5712,"min":606.7639,"max":634.4602},"latency_p50_ms":{"median":1.2953,"min":1.2568,"max":1.3058},"latency_p95_ms":{"median":3.2551,"min":3.1061,"max":3.3052},"storage_bytes_per_million_events":{"median":5149786666.7,"min":5149786666.7,"max":5188000000.0}},
+  "full_pipeline_last_run_counts":{"accepted":1500,"duplicates":0,"invalid":0,"alerts":203,"anomaly_alerts":6,"incidents":3,"dead_letters":0},
+  "hardware":{"platform":"Linux x86_64 container","python":"3.13.5","cpu_count":5,"max_rss_kib":125852},
+  "method":"Three clean temporary SQLite runs per mode. Baseline normalizes and stores only; full mode adds rule and anomaly evaluation, alert inserts, entity correlation and incident updates.",
+  "limitations":"Synthetic sequential workload; no concurrent producer or labelled ground truth. Does not establish field precision/recall, endpoint-day false positives, broker lag or production capacity. Storage per million is linear extrapolation."
+}
