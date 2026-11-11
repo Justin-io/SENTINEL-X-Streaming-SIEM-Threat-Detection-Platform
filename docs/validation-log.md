@@ -18,3 +18,4 @@ Measured synthetic benchmark medians: baseline 1,352.3 events/s, p50 0.667 ms, p
 Backtracking corrections: fixed JSONL newline output; aligned Windows Users/Public matching fixtures; changed correlation windows to source event time and sorted case timelines by event time; made SQLite authoritative for event hunting and added explicit ClickHouse backfill; preserved full Sysmon XML in raw evidence; narrowed ATT&CK mapping for weak indicators.
 
 Not measured: labelled precision/recall, endpoint-day false positives, correlation precision, live broker lag, concurrent drops, or production capacity. These require labelled representative data and real infrastructure.
+\nGitHub Actions run: https://github.com/Justin-io/SENTINEL-X-Streaming-SIEM-Threat-Detection-Platform/actions/runs/43089745617 (success; 30 tests passed).\n
